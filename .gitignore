@@ -54,3 +54,22 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+# IntelliJ
+
+**/.idea
+
+# Dotfiles
+
+**/.env
+
+# NPM Files
+
+**/node_modules
+**/package-lock.json
+.vercel
+
+# Obsidian Editor
+**/.obsidian
+
+# Sonar Scanner
+**/.scannerwork
