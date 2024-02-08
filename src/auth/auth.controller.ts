@@ -7,7 +7,7 @@ import { AuthlogInUserDto } from './models/auth.login.user.dto';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly appService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Get('/refresh')
   @ApiHeader({
@@ -17,15 +17,15 @@ export class AuthController {
   getRefresh(@Request() Req): object {
     const usrToken = Req.headers['x-auth'];
     console.log(usrToken);
-    return this.appService.getRefresh(usrToken);
+    return this.authService.getRefresh(usrToken);
   }
   @Post('/register')
   postRegister(@Body() signInForm: AuthSignInUserDto): object {
-    return this.appService.signIn(signInForm);
+    return this.authService.signIn(signInForm);
   }
   @Post('/login')
   postlogin(@Body() loginForm: AuthlogInUserDto): object {
-    return { response: this.appService.login(loginForm) };
+    return { response: this.authService.login(loginForm) };
   }
   @Post('/logout')
   @ApiHeader({
@@ -35,6 +35,6 @@ export class AuthController {
   postLogout(@Request() Req): object {
     const usrToken = Req.headers['x-auth'];
     console.log(usrToken);
-    return { response: this.appService.logout(usrToken) };
+    return { response: this.authService.logout(usrToken) };
   }
 }

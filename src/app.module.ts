@@ -1,17 +1,27 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AuthController } from './Auth/auth.controller';
-import { AppService } from './app.service';
-import { AuthService } from './Auth/auth.service';
-import { UserModule } from './user/user.module';
-import { UserService } from './user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { PostController } from './post/post.controller';
-import { PostService } from './post/post.service';
+import { MongooseModule } from '@nestjs/mongoose';
+
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
+import { ConfigModule } from '@nestjs/config';
+
 @Module({
-  imports: [UserModule, PostModule],
-  controllers: [AppController, AuthController, PostController],
-  providers: [UserService, JwtService, AppService, AuthService, PostService],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
+    MongooseModule.forRoot(
+      process.env.DBURI || 'mongodb+srv://localhost:2701/',
+    ),
+    AuthModule,
+    UserModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService, JwtService],
 })
 export class AppModule {}

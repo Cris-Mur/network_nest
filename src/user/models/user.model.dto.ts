@@ -16,6 +16,6 @@ export class UserModelDto {
   createAt: Date;
   @ApiProperty()
   updateAt: Date;
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   deleteAt: Date;
 }

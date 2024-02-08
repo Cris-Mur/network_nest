@@ -26,8 +26,9 @@ export class AuthService {
   ): Promise<{ access_token: string }> {
     const { email, password } = signInForm;
     const user = await this.userService.findOne(email);
-    if (user?.password !== password) {
-      throw new Error('User Already exists');
+    console.log(user);
+    if (!user) {
+      this.userService.createUser(signInForm);
     }
     const payload = { sub: user?.Id, username: user.fullName };
     return {

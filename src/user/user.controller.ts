@@ -13,7 +13,7 @@ export class UserController {
     description: 'Custom auth header',
   })
   getUser(@Param('id') id: string): object {
-    return {};
+    return { id };
   }
   @Put(':id')
   @ApiHeader({
@@ -30,6 +30,7 @@ export class UserController {
   })
   deleteUser(@Param('id') id: string): object {
     return {
+      id,
       deleteAt: Date(),
     };
   }
