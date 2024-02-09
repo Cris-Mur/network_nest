@@ -38,9 +38,7 @@ export class AuthController {
   @Post('/logout')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  postLogout(@Request() Req): object {
-    const usrToken = Req.headers['authorization'];
-    console.log(usrToken);
-    return { response: this.authService.logout(usrToken) };
+  async postLogout(@Request() Req): Promise<string> {
+    return this.authService.logout(Req.user.sub);
   }
 }

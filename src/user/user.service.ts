@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { v4 as uuidv4 } from 'uuid';
 
 import { User } from './schemas/user.schema';
 
@@ -21,10 +20,9 @@ export class UserService {
   async createUser(user: UserCreateDto): Promise<User> {
     const newUser: UserModelDto = {
       ...user,
-      iduser: uuidv4(),
       createAt: new Date(),
       post: [],
-      updateAt: new Date(),
+      updateAt: null,
       deleteAt: null,
     };
     const result = new this.userModel(newUser);
@@ -32,7 +30,9 @@ export class UserService {
   }
 
   async updateUser(email: string, update: User): Promise<object> {
-    console.log('update', update);
+    update.updateAt = new Date();
+    const result = this.userModel.updateOne({ email }, update);
+    result.exec();
     return this.findOne(email);
   }
 }

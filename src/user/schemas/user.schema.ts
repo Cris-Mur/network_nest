@@ -34,6 +34,9 @@ export class User {
 
   @Prop()
   lastLogin: Date;
+
+  @Prop()
+  login: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { randomBytes } from 'crypto';
 import { AuthSignInUserDto } from './models/auth.signin.user.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -13,9 +17,6 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  getHello(): string {
-    return 'Hello World!';
-  }
   getRefresh(token: string): object {
     return {
       refresh: randomBytes(16).toString('hex'),
@@ -26,17 +27,27 @@ export class AuthService {
     signInForm: AuthSignInUserDto,
   ): Promise<{ access_token: string }> {
     const { email, password } = signInForm;
+    const emailrex = new RegExp(
+      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+      'g',
+    );
+    if (!emailrex.test(email)) {
+      throw new BadRequestException();
+    }
+
     let user = await this.userService.findOne(email);
     if (!user) {
       this.userService.createUser(signInForm);
     } else if (password === signInForm.password) {
       return this.login({ email, password });
     } else {
-      throw new Error('Unathorized');
+      throw new UnauthorizedException();
     }
     user = await this.userService.findOne(email);
-    const payload = { sub: user?.Id, username: user.fullName };
+    const payload = { sub: user?.email, username: user.fullName };
     console.log(jwtConstants.secret);
+    user.login = true;
+    this.userService.updateUser(user.email, user);
     return {
       access_token: await this.jwtService.signAsync(payload, {
         expiresIn: '300s',
@@ -49,21 +60,26 @@ export class AuthService {
     const { email, password } = loginForm;
     const user = await this.userService.findOne(email);
     if (user?.password !== password) {
-      throw new Error('User Already exists');
+      throw new UnauthorizedException();
     }
-    const payload = { sub: user?.Id, username: user.fullName };
+    const payload = { sub: user?.email, username: user.fullName };
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '300s',
       secret: jwtConstants.secret,
     });
     user.lastLogin = new Date();
+    user.login = true;
     this.userService.updateUser(user.email, user);
     return {
       access_token: token,
     };
   }
-  logout(token: string): string {
-    console.debug(token);
+
+  async logout(email: string): Promise<string> {
+    console.log('[email]', email);
+    const user = await this.userService.findOne(email);
+    user.login = false;
+    this.userService.updateUser(email, user);
     return 'Done';
   }
 }

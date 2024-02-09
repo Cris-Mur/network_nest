@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserModelDto {
-  iduser: string;
   @ApiProperty()
   fullName: string;
   @ApiProperty()
