@@ -20,8 +20,9 @@ import { ConfigModule } from '@nestjs/config';
     ),
     AuthModule,
     UserModule,
+    PostModule,
   ],
   controllers: [AppController],
-  providers: [AppService, JwtService],
+  providers: [AppService],
 })
 export class AppModule {}

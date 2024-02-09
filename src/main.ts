@@ -9,6 +9,7 @@ async function bootstrap() {
     .setTitle('Social Network API')
     .setDescription('The API description')
     .setVersion('1.0')
+    .addBearerAuth()
     .addTag('Auth')
     .addTag('User')
     .addTag('Post')

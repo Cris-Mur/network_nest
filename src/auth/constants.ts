@@ -1,3 +1,3 @@
 export const jwtConstants = {
-  secret: 'this must be a enviroment',
+  secret: process.env.TOKENSECRET || 'this must be a enviroment',
 };
